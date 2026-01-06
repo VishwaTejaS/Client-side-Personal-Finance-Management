@@ -1,0 +1,553 @@
+<!-- 
+  NOTIFICATIONS & ALERTS - DEMO PAGE
+  
+  This HTML page serves as a reference guide to visually test
+  all notification, alert, and modal features.
+  
+  Usage: Open this in the browser to see interactive demos
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Notifications & Alerts Demo</title>
+    <style>
+        body { padding: 20px; background: var(--bg); }
+        .demo-section {
+            background: var(--card);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .demo-section h2 {
+            margin-top: 0;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .button-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .button-primary:hover { opacity: 0.9; }
+        .button-success {
+            background: var(--success);
+            color: white;
+        }
+        .button-error {
+            background: var(--danger);
+            color: white;
+        }
+        .button-warning {
+            background: var(--warning);
+            color: white;
+        }
+        .button-info {
+            background: #3b82f6;
+            color: white;
+        }
+        .code-block {
+            background: var(--bg);
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid var(--primary);
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+        .demo-description {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="max-width: 1000px; margin: 0 auto;">
+        <h1 style="color: var(--primary);">🔔 Notifications & Alerts Demo</h1>
+        <p style="color: var(--text-muted);">Interactive demonstration of all notification, loading, and modal features</p>
+
+        <!-- SECTION 1: TOAST NOTIFICATIONS -->
+        <div class="demo-section">
+            <h2>1️⃣ Toast Notifications</h2>
+            
+            <h3>Success Notifications</h3>
+            <p class="demo-description">Green border with checkmark icon - appears for completed actions</p>
+            <div class="button-group">
+                <button class="button button-success" onclick="showSuccessDemo1()">Show Success (2s)</button>
+                <button class="button button-success" onclick="showSuccessDemo2()">Show Success (4s)</button>
+                <button class="button button-success" onclick="showSuccessDemo3()">Multiple Success</button>
+            </div>
+            <div class="code-block">UIService.showNotification('Profile updated successfully', 'success');</div>
+
+            <h3>Error Notifications</h3>
+            <p class="demo-description">Red border with X icon - indicates failures or problems</p>
+            <div class="button-group">
+                <button class="button button-error" onclick="showErrorDemo1()">Show Error (3s)</button>
+                <button class="button button-error" onclick="showErrorDemo2()">Show Error (5s)</button>
+                <button class="button button-error" onclick="showErrorDemo3()">Multiple Errors</button>
+            </div>
+            <div class="code-block">UIService.showNotification('Failed to save profile', 'error');</div>
+
+            <h3>Warning Notifications</h3>
+            <p class="demo-description">Orange border with caution icon - for warnings and validations</p>
+            <div class="button-group">
+                <button class="button button-warning" onclick="showWarningDemo1()">Show Warning (3s)</button>
+                <button class="button button-warning" onclick="showWarningDemo2()">Show Warning (4s)</button>
+                <button class="button button-warning" onclick="showWarningDemo3()">Budget Alert</button>
+            </div>
+            <div class="code-block">UIService.showNotification('Please fill all required fields', 'warning');</div>
+
+            <h3>Info Notifications</h3>
+            <p class="demo-description">Blue border with info icon - for general information</p>
+            <div class="button-group">
+                <button class="button button-info" onclick="showInfoDemo1()">Show Info (3s)</button>
+                <button class="button button-info" onclick="showInfoDemo2()">Show Info (5s)</button>
+                <button class="button button-info" onclick="showInfoDemo3()">Sync Message</button>
+            </div>
+            <div class="code-block">UIService.showNotification('Data synced successfully', 'info');</div>
+        </div>
+
+        <!-- SECTION 2: LOADING SPINNERS -->
+        <div class="demo-section">
+            <h2>2️⃣ Loading Spinners</h2>
+            <p class="demo-description">Visual feedback during async operations with animated spinner</p>
+            
+            <h3>Basic Loading</h3>
+            <div class="button-group">
+                <button class="button button-primary" onclick="showLoadingDemo1()">Show Loading (2s)</button>
+                <button class="button button-primary" onclick="showLoadingDemo2()">Show Loading (3s)</button>
+            </div>
+            <div class="code-block">UIService.showLoading('Processing...');
+setTimeout(() => UIService.hideLoading(), 2000);</div>
+
+            <h3>Custom Messages</h3>
+            <div class="button-group">
+                <button class="button button-primary" onclick="showLoadingDemo3()">Saving...</button>
+                <button class="button button-primary" onclick="showLoadingDemo4()">Exporting...</button>
+                <button class="button button-primary" onclick="showLoadingDemo5()">Syncing...</button>
+                <button class="button button-primary" onclick="showLoadingDemo6()">Processing...</button>
+            </div>
+
+            <h3>With Notifications</h3>
+            <p class="demo-description">Combine loading spinner with success notification</p>
+            <div class="button-group">
+                <button class="button button-primary" onclick="showLoadingWithNotification()">Load → Success</button>
+                <button class="button button-primary" onclick="showLoadingWithError()">Load → Error</button>
+            </div>
+        </div>
+
+        <!-- SECTION 3: MODAL DIALOGS -->
+        <div class="demo-section">
+            <h2>3️⃣ Modal Dialogs</h2>
+            <p class="demo-description">Interactive overlays for confirmations and user interactions</p>
+            
+            <h3>Confirmation Dialog</h3>
+            <div class="button-group">
+                <button class="button button-primary" onclick="showConfirmDemo()">Show Confirmation</button>
+            </div>
+            <div class="code-block">const action = await UIService.showModal(
+    'Title',
+    'Message',
+    [{ label: 'Cancel', action: 'cancel' }, ...]
+);</div>
+
+            <h3>Delete Confirmation</h3>
+            <p class="demo-description">High priority action requiring confirmation</p>
+            <div class="button-group">
+                <button class="button button-error" onclick="showDeleteConfirmDemo()">Delete Item</button>
+            </div>
+
+            <h3>Multiple Options</h3>
+            <p class="demo-description">More than 2 buttons for different actions</p>
+            <div class="button-group">
+                <button class="button button-primary" onclick="showExportDemo()">Export Options</button>
+                <button class="button button-primary" onclick="showActionDemo()">Multiple Actions</button>
+            </div>
+
+            <h3>Info Dialog</h3>
+            <p class="demo-description">Display information with OK button</p>
+            <div class="button-group">
+                <button class="button button-primary" onclick="showInfoDialog()">Show Info</button>
+                <button class="button button-warning" onclick="showAlertDialog()">Show Alert</button>
+            </div>
+        </div>
+
+        <!-- SECTION 4: COMBINED WORKFLOWS -->
+        <div class="demo-section">
+            <h2>4️⃣ Combined Workflows</h2>
+            <p class="demo-description">Real-world patterns combining multiple notification types</p>
+            
+            <h3>Form Submission Flow</h3>
+            <div class="button-group">
+                <button class="button button-primary" onclick="formSubmissionFlow()">Submit Form</button>
+            </div>
+
+            <h3>Delete with Confirmation</h3>
+            <div class="button-group">
+                <button class="button button-error" onclick="deleteWithConfirmFlow()">Delete All Data</button>
+            </div>
+
+            <h3>Export with Progress</h3>
+            <div class="button-group">
+                <button class="button button-primary" onclick="exportWithProgressFlow()">Export Data</button>
+            </div>
+
+            <h3>Settings Save</h3>
+            <div class="button-group">
+                <button class="button button-primary" onclick="saveSettingsFlow()">Save Settings</button>
+            </div>
+        </div>
+
+        <!-- SECTION 5: STRESS TEST -->
+        <div class="demo-section">
+            <h2>5️⃣ Stress Test</h2>
+            <p class="demo-description">Test behavior with multiple simultaneous notifications</p>
+            
+            <div class="button-group">
+                <button class="button button-primary" onclick="stressTestNotifications()">Rapid Notifications (5)</button>
+                <button class="button button-primary" onclick="stressTestMixed()">Mixed Notifications (8)</button>
+                <button class="button button-primary" onclick="clearAllNotifications()">Clear All</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="services/storage.js"></script>
+    <script src="services/ui.js"></script>
+    <script src="services/auth.js"></script>
+
+    <script>
+        // SECTION 1: TOAST NOTIFICATION DEMOS
+
+        function showSuccessDemo1() {
+            UIService.showNotification('✓ Profile updated successfully', 'success', 2000);
+        }
+
+        function showSuccessDemo2() {
+            UIService.showNotification('✓ Data saved to cloud', 'success', 4000);
+        }
+
+        function showSuccessDemo3() {
+            UIService.showNotification('✓ First operation completed', 'success', 2000);
+            setTimeout(() => UIService.showNotification('✓ Second operation completed', 'success', 2000), 500);
+        }
+
+        function showErrorDemo1() {
+            UIService.showNotification('✕ Failed to update profile', 'error', 3000);
+        }
+
+        function showErrorDemo2() {
+            UIService.showNotification('✕ Network connection error', 'error', 5000);
+        }
+
+        function showErrorDemo3() {
+            UIService.showNotification('✕ Validation failed', 'error', 2000);
+            setTimeout(() => UIService.showNotification('✕ Please check your input', 'error', 2000), 600);
+        }
+
+        function showWarningDemo1() {
+            UIService.showNotification('⚠ Please fill all required fields', 'warning', 3000);
+        }
+
+        function showWarningDemo2() {
+            UIService.showNotification('⚠ You have unsaved changes', 'warning', 4000);
+        }
+
+        function showWarningDemo3() {
+            UIService.showNotification('⚠ Budget limit reached for Entertainment', 'warning', 4000);
+        }
+
+        function showInfoDemo1() {
+            UIService.showNotification('ℹ Data synced successfully', 'info', 3000);
+        }
+
+        function showInfoDemo2() {
+            UIService.showNotification('ℹ New feature available - Check settings', 'info', 5000);
+        }
+
+        function showInfoDemo3() {
+            UIService.showNotification('ℹ Syncing with cloud...', 'info', 3000);
+        }
+
+        // SECTION 2: LOADING SPINNER DEMOS
+
+        function showLoadingDemo1() {
+            UIService.showLoading('Loading...');
+            setTimeout(() => UIService.hideLoading(), 2000);
+        }
+
+        function showLoadingDemo2() {
+            UIService.showLoading('Processing...');
+            setTimeout(() => UIService.hideLoading(), 3000);
+        }
+
+        function showLoadingDemo3() {
+            UIService.showLoading('Saving your profile...');
+            setTimeout(() => UIService.hideLoading(), 2500);
+        }
+
+        function showLoadingDemo4() {
+            UIService.showLoading('Exporting data to PDF...');
+            setTimeout(() => UIService.hideLoading(), 2000);
+        }
+
+        function showLoadingDemo5() {
+            UIService.showLoading('Syncing with cloud...');
+            setTimeout(() => UIService.hideLoading(), 2500);
+        }
+
+        function showLoadingDemo6() {
+            UIService.showLoading('Processing transaction...');
+            setTimeout(() => UIService.hideLoading(), 2000);
+        }
+
+        async function showLoadingWithNotification() {
+            UIService.showLoading('Saving...');
+            await new Promise(r => setTimeout(r, 2000));
+            UIService.hideLoading();
+            UIService.showNotification('✓ Saved successfully', 'success', 2000);
+        }
+
+        async function showLoadingWithError() {
+            UIService.showLoading('Processing...');
+            await new Promise(r => setTimeout(r, 2000));
+            UIService.hideLoading();
+            UIService.showNotification('✕ Operation failed', 'error', 3000);
+        }
+
+        // SECTION 3: MODAL DIALOG DEMOS
+
+        async function showConfirmDemo() {
+            const action = await UIService.showModal(
+                'Confirm Action',
+                'Are you sure you want to proceed with this action?',
+                [
+                    { label: 'Cancel', action: 'cancel', type: 'secondary' },
+                    { label: 'Confirm', action: 'confirm', type: 'primary' }
+                ]
+            );
+            
+            if (action === 'confirm') {
+                UIService.showNotification('✓ Action confirmed', 'success', 2000);
+            } else {
+                UIService.showNotification('ℹ Action cancelled', 'info', 2000);
+            }
+        }
+
+        async function showDeleteConfirmDemo() {
+            const action = await UIService.showModal(
+                'Delete Transaction',
+                'This action cannot be undone. Are you sure you want to delete this transaction permanently?',
+                [
+                    { label: 'Cancel', action: 'cancel', type: 'secondary' },
+                    { label: 'Delete', action: 'confirm', type: 'danger' }
+                ]
+            );
+            
+            if (action === 'confirm') {
+                UIService.showNotification('✓ Transaction deleted', 'success', 2000);
+            }
+        }
+
+        async function showExportDemo() {
+            const action = await UIService.showModal(
+                'Export Data',
+                'Choose the format to export your financial data:',
+                [
+                    { label: 'CSV', action: 'csv', type: 'primary' },
+                    { label: 'PDF', action: 'pdf', type: 'primary' },
+                    { label: 'Cancel', action: 'cancel', type: 'secondary' }
+                ]
+            );
+            
+            if (action === 'csv') {
+                UIService.showNotification('✓ Exporting as CSV...', 'success', 2000);
+            } else if (action === 'pdf') {
+                UIService.showNotification('✓ Exporting as PDF...', 'success', 2000);
+            }
+        }
+
+        async function showActionDemo() {
+            const action = await UIService.showModal(
+                'Choose Action',
+                'What would you like to do?',
+                [
+                    { label: 'Edit', action: 'edit', type: 'primary' },
+                    { label: 'Share', action: 'share', type: 'primary' },
+                    { label: 'Archive', action: 'archive', type: 'primary' },
+                    { label: 'Delete', action: 'delete', type: 'danger' },
+                    { label: 'Cancel', action: 'cancel', type: 'secondary' }
+                ]
+            );
+            
+            if (action) {
+                UIService.showNotification(`✓ ${action.toUpperCase()} selected`, 'info', 2000);
+            }
+        }
+
+        async function showInfoDialog() {
+            await UIService.showModal(
+                'Budget Alert',
+                'You have used 90% of your monthly budget.<br><br>Budget: ₹50,000<br>Spent: ₹45,000<br>Remaining: ₹5,000',
+                [
+                    { label: 'OK', action: 'ok', type: 'primary' }
+                ]
+            );
+            UIService.showNotification('ℹ Alert acknowledged', 'info', 2000);
+        }
+
+        async function showAlertDialog() {
+            await UIService.showModal(
+                'Important Notice',
+                'Your session will expire in 5 minutes due to inactivity. Click OK to extend your session.',
+                [
+                    { label: 'OK', action: 'ok', type: 'primary' }
+                ]
+            );
+            UIService.showNotification('✓ Session extended', 'success', 2000);
+        }
+
+        // SECTION 4: WORKFLOW DEMOS
+
+        async function formSubmissionFlow() {
+            const action = await UIService.showModal(
+                'Submit Form',
+                'Review your information and confirm submission.',
+                [
+                    { label: 'Cancel', action: 'cancel', type: 'secondary' },
+                    { label: 'Submit', action: 'submit', type: 'primary' }
+                ]
+            );
+
+            if (action === 'submit') {
+                UIService.showLoading('Submitting form...');
+                await new Promise(r => setTimeout(r, 2000));
+                UIService.hideLoading();
+                UIService.showNotification('✓ Form submitted successfully', 'success', 2000);
+            }
+        }
+
+        async function deleteWithConfirmFlow() {
+            const action = await UIService.showModal(
+                'Delete All Data',
+                'This will permanently delete all your financial data. This action cannot be undone.',
+                [
+                    { label: 'Cancel', action: 'cancel', type: 'secondary' },
+                    { label: 'Delete All', action: 'confirm', type: 'danger' }
+                ]
+            );
+
+            if (action === 'confirm') {
+                UIService.showLoading('Deleting all data...');
+                await new Promise(r => setTimeout(r, 2500));
+                UIService.hideLoading();
+                UIService.showNotification('✓ All data deleted successfully', 'success', 2000);
+            }
+        }
+
+        async function exportWithProgressFlow() {
+            UIService.showLoading('Generating export...');
+            await new Promise(r => setTimeout(r, 1000));
+            UIService.hideLoading();
+            
+            UIService.showLoading('Creating PDF...');
+            await new Promise(r => setTimeout(r, 1500));
+            UIService.hideLoading();
+            
+            UIService.showNotification('✓ Export completed and downloaded', 'success', 2000);
+        }
+
+        async function saveSettingsFlow() {
+            const action = await UIService.showModal(
+                'Save Settings',
+                'Your changes will be saved. This may take a few moments.',
+                [
+                    { label: 'Cancel', action: 'cancel', type: 'secondary' },
+                    { label: 'Save', action: 'save', type: 'primary' }
+                ]
+            );
+
+            if (action === 'save') {
+                UIService.showLoading('Saving settings...');
+                await new Promise(r => setTimeout(r, 1500));
+                UIService.hideLoading();
+                UIService.showNotification('✓ Settings saved successfully', 'success', 2000);
+            }
+        }
+
+        // SECTION 5: STRESS TEST
+
+        function stressTestNotifications() {
+            const messages = [
+                { text: 'First notification', type: 'success' },
+                { text: 'Second notification', type: 'info' },
+                { text: 'Third notification', type: 'warning' },
+                { text: 'Fourth notification', type: 'error' },
+                { text: 'Fifth notification', type: 'success' }
+            ];
+
+            messages.forEach((msg, idx) => {
+                setTimeout(() => {
+                    UIService.showNotification(msg.text, msg.type, 3000);
+                }, idx * 400);
+            });
+        }
+
+        function stressTestMixed() {
+            // Show rapid notifications and a loading spinner
+            UIService.showNotification('✓ Operation 1 complete', 'success', 2000);
+            
+            setTimeout(() => {
+                UIService.showLoading('Processing batch...');
+            }, 500);
+            
+            setTimeout(() => {
+                UIService.showNotification('⚠ Warning: High usage detected', 'warning', 2000);
+            }, 1000);
+            
+            setTimeout(() => {
+                UIService.hideLoading();
+            }, 2000);
+            
+            setTimeout(() => {
+                UIService.showNotification('✓ Batch processed', 'success', 2000);
+            }, 2500);
+            
+            setTimeout(() => {
+                UIService.showNotification('ℹ Syncing..', 'info', 2000);
+            }, 3500);
+            
+            setTimeout(() => {
+                UIService.showNotification('✓ Sync complete', 'success', 2000);
+            }, 4500);
+        }
+
+        function clearAllNotifications() {
+            const notifications = document.querySelectorAll('.notification');
+            notifications.forEach(n => n.remove());
+            UIService.showNotification('✓ All notifications cleared', 'info', 2000);
+        }
+    </script>
+</body>
+</html>

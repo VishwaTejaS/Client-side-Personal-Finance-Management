@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <title>Profile - Personal Finance Manager</title>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">💰 Personal Finance Manager</div>
+            <div class="nav-links">
+                <a href="index.html">Dashboard</a>
+                <a href="analytics.html">Analytics</a>
+                <a href="charts.html">Charts</a>
+                <a href="summary.html">Summary</a>
+                <a href="profile.html" class="active">Profile</a>
+            </div>
+            <div class="toolbar">
+                <div class="profile-section">
+                    <button class="profile-button" onclick="UIService.toggleProfileDropdown()" aria-label="Profile menu">
+                        <img id="header-avatar" src="" alt="User avatar" class="avatar-sm">
+                        <span id="header-name">User</span>
+                    </button>
+                    <div id="profile-dropdown" class="profile-dropdown">
+                        <a href="profile.html" class="dropdown-item">
+                            <i class="bx bx-user"></i> My Profile
+                        </a>
+                        <a href="#" class="dropdown-item" onclick="logout(event)">
+                            <i class="bx bx-log-out"></i> Logout
+                        </a>
+                    </div>
+                </div>
+                <button id="btn_toggle_dark" class="button" aria-label="Toggle dark mode">🌓</button>
+            </div>
+        </div>
+
+        <div class="profile-container">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <img id="profile-avatar" src="" alt="User avatar" class="profile-avatar-lg">
+                <div class="profile-header-info">
+                    <h1 id="profile-name">User Name</h1>
+                    <p id="profile-email">user@example.com</p>
+                    <p class="profile-member-since">Member since <span id="profile-member-date">-</span></p>
+                </div>
+            </div>
+
+            <!-- Profile Tabs -->
+            <div class="profile-tabs">
+                <button class="tab-button active" onclick="switchTab('overview')">
+                    <i class="bx bx-info-circle"></i> Overview
+                </button>
+                <button class="tab-button" onclick="switchTab('edit')">
+                    <i class="bx bx-edit"></i> Edit Profile
+                </button>
+                <button class="tab-button" onclick="switchTab('settings')">
+                    <i class="bx bx-cog"></i> Settings
+                </button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div id="overview-tab" class="tab-content active">
+                <div class="profile-grid">
+                    <div class="profile-info-card">
+                        <h3>Account Information</h3>
+                        <div class="info-row">
+                            <span class="info-label">Email Address</span>
+                            <span id="info-email" class="info-value">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Full Name</span>
+                            <span id="info-name" class="info-value">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Account Created</span>
+                            <span id="info-created" class="info-value">-</span>
+                        </div>
+                    </div>
+
+                    <div class="profile-info-card">
+                        <h3>Activity</h3>
+                        <div class="info-row">
+                            <span class="info-label">Last Login</span>
+                            <span id="info-last-login" class="info-value">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Account Status</span>
+                            <span class="info-value">
+                                <span class="status-badge status-active">Active</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="profile-info-card full-width">
+                        <h3>Quick Stats</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value" id="stat-total-budget">₹0</div>
+                                <div class="stat-label">Total Budget</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="stat-total-expenses">₹0</div>
+                                <div class="stat-label">Total Expenses</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="stat-balance">₹0</div>
+                                <div class="stat-label">Balance</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Profile Tab -->
+            <div id="edit-tab" class="tab-content">
+                <form id="edit-profile-form" class="edit-form">
+                    <div class="form-group">
+                        <label for="edit-name">Full Name</label>
+                        <input 
+                            type="text" 
+                            id="edit-name" 
+                            placeholder="Your full name"
+                            required
+                        >
+                        <span class="form-error" id="edit-name-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-email">Email Address</label>
+                        <input 
+                            type="email" 
+                            id="edit-email" 
+                            placeholder="your@email.com"
+                            required
+                        >
+                        <span class="form-error" id="edit-email-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-avatar">Avatar URL</label>
+                        <input 
+                            type="text" 
+                            id="edit-avatar" 
+                            placeholder="https://..."
+                        >
+                        <small>Leave empty for auto-generated avatar</small>
+                        <span class="form-error" id="edit-avatar-error"></span>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="button button-primary">
+                            <i class="bx bx-check"></i> Save Changes
+                        </button>
+                        <button type="button" class="button button-secondary" onclick="switchTab('overview')">
+                            <i class="bx bx-x"></i> Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings-tab" class="tab-content">
+                <div class="settings-group">
+                    <h3>Application Settings</h3>
+                    
+                    <div class="setting-item">
+                        <div>
+                            <h4>Dark Mode</h4>
+                            <p>Enable dark theme for better night viewing</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <h4>Data Export</h4>
+                            <p>Download your financial data as JSON</p>
+                        </div>
+                        <button class="button button-secondary" onclick="exportUserData()">
+                            <i class="bx bx-download"></i> Export Data
+                        </button>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <h4>Clear Local Data</h4>
+                            <p>Remove all application data from this device</p>
+                        </div>
+                        <button class="button button-danger" onclick="clearAllData()">
+                            <i class="bx bx-trash"></i> Clear Data
+                        </button>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <h4>Danger Zone</h4>
+                            <p>Delete your account permanently</p>
+                        </div>
+                        <button class="button button-danger" onclick="deleteAccount()">
+                            <i class="bx bx-trash-alt"></i> Delete Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="services/storage.js"></script>
+    <script src="services/ui.js"></script>
+    <script src="services/auth.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Check authentication
+        AuthService.requireAuth();
+
+        // Load profile data
+        function loadProfileData() {
+            const user = AuthService.getCurrentUser();
+            if (!user) return;
+
+            // Header
+            document.getElementById('header-avatar').src = user.avatar;
+            document.getElementById('header-name').textContent = user.fullName;
+
+            // Profile header
+            document.getElementById('profile-avatar').src = user.avatar;
+            document.getElementById('profile-name').textContent = user.fullName;
+            document.getElementById('profile-email').textContent = user.email;
+
+            // Account info
+            document.getElementById('info-email').textContent = user.email;
+            document.getElementById('info-name').textContent = user.fullName;
+            document.getElementById('info-created').textContent = UIService.formatDateTime(new Date(user.createdAt));
+
+            // Last login
+            const lastLogin = StorageService.getLastLogin();
+            document.getElementById('info-last-login').textContent = UIService.formatDateTime(lastLogin);
+            document.getElementById('profile-member-date').textContent = new Date(user.createdAt).getFullYear();
+
+            // Edit form
+            document.getElementById('edit-name').value = user.fullName;
+            document.getElementById('edit-email').value = user.email;
+            document.getElementById('edit-avatar').value = user.avatar;
+
+            // Load finance stats
+            loadFinanceStats();
+
+            // Apply theme
+            applyThemeFromStorage();
+        }
+
+        // Load finance statistics
+        function loadFinanceStats() {
+            // Load from the main app's storage format
+            const stored = localStorage.getItem('pfm_state');
+            let itemList = [];
+            let totalBudget = 0;
+
+            if (stored) {
+                const data = JSON.parse(stored);
+                itemList = data.itemList || [];
+                totalBudget = data.budget || 0;
+            }
+
+            const totalExpenses = itemList.reduce((sum, item) => sum + (item.amount || 0), 0);
+            const balance = totalBudget - totalExpenses;
+
+            document.getElementById('stat-total-budget').textContent = `₹${totalBudget.toLocaleString()}`;
+            document.getElementById('stat-total-expenses').textContent = `₹${totalExpenses.toLocaleString()}`;
+            document.getElementById('stat-balance').textContent = `₹${balance.toLocaleString()}`;
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.closest('.tab-button').classList.add('active');
+        }
+
+        // Edit profile form
+        document.getElementById('edit-profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('edit-name').value.trim();
+            const email = document.getElementById('edit-email').value.trim();
+            const avatar = document.getElementById('edit-avatar').value.trim();
+
+            // Validation
+            document.getElementById('edit-name-error').textContent = '';
+            document.getElementById('edit-email-error').textContent = '';
+
+            if (!name || name.length < 2) {
+                document.getElementById('edit-name-error').textContent = 'Name must be at least 2 characters';
+                return;
+            }
+
+            if (!UIService.validateEmail(email)) {
+                document.getElementById('edit-email-error').textContent = 'Invalid email';
+                return;
+            }
+
+            UIService.showLoading('Updating profile...');
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            const updates = {
+                fullName: name,
+                email: email,
+                avatar: avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
+            };
+
+            const result = AuthService.updateProfile(updates);
+
+            UIService.hideLoading();
+
+            if (result.success) {
+                UIService.showNotification('Profile updated successfully', 'success');
+                loadProfileData();
+                switchTab('overview');
+            } else {
+                UIService.showNotification(result.message, 'error');
+            }
+        });
+
+        // Logout
+        async function logout(e) {
+            e.preventDefault();
+            const action = await UIService.showModal(
+                'Logout',
+                'Are you sure you want to logout?',
+                [
+                    { label: 'Cancel', action: 'cancel', type: 'secondary' },
+                    { label: 'Logout', action: 'confirm', type: 'danger' }
+                ]
+            );
+
+            if (action === 'confirm') {
+                AuthService.logout();
+                UIService.showNotification('Logged out successfully', 'success', 1500);
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1000);
+            }
+        }
+
+        // Export user data
+        function exportUserData() {
+            const user = AuthService.getCurrentUser();
+            const stored = localStorage.getItem('pfm_state');
+            let itemList = [];
+            let totalBudget = 0;
+
+            if (stored) {
+                const data = JSON.parse(stored);
+                itemList = data.itemList || [];
+                totalBudget = data.budget || 0;
+            }
+
+            const data = {
+                user,
+                itemList,
+                totalBudget,
+                exportedAt: new Date().toISOString(),
+            };
+
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `finance-data-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            UIService.showNotification('Data exported successfully', 'success');
+        }
+
+        // Clear all data
+        async function clearAllData() {
+            const action = await UIService.showModal(
+                'Clear All Data',
+                'This will delete all your financial data but keep your account. This cannot be undone.',
+                [
+                    { label: 'Cancel', action: 'cancel', type: 'secondary' },
+                    { label: 'Clear All', action: 'confirm', type: 'danger' }
+                ]
+            );
+
+            if (action === 'confirm') {
+                localStorage.removeItem('pfm_state');
+                localStorage.removeItem('budgetLimits');
+                localStorage.removeItem('recurringExpenses');
+                UIService.showNotification('All data cleared', 'success');
+                loadProfileData();
+            }
+        }
+
+        // Delete account
+        async function deleteAccount() {
+            const action = await UIService.showModal(
+                'Delete Account',
+                'This will permanently delete your account and all associated data. This action cannot be undone. Type "DELETE" to confirm.',
+                [
+                    { label: 'Cancel', action: 'cancel', type: 'secondary' },
+                    { label: 'Delete Account', action: 'confirm', type: 'danger' }
+                ]
+            );
+
+            if (action === 'confirm') {
+                AuthService.logout();
+                localStorage.clear();
+                UIService.showNotification('Account deleted successfully', 'success', 1500);
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1000);
+            }
+        }
+
+        // Toggle dark mode
+        function toggleDarkMode() {
+            const isDark = document.body.classList.toggle('dark');
+            localStorage.setItem('pfm_dark', isDark);
+        }
+
+        // Apply theme
+        function applyThemeFromStorage() {
+            const isDark = localStorage.getItem('pfm_dark') === 'true';
+            if (isDark) {
+                document.body.classList.add('dark');
+            } else {
+                document.body.classList.remove('dark');
+            }
+            const btn = document.getElementById('btn_toggle_dark');
+            if (btn) btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            loadProfileData();
+            applyThemeFromStorage();
+            const btnToggleDark = document.getElementById('btn_toggle_dark');
+            if (btnToggleDark) btnToggleDark.addEventListener('click', () => { document.body.classList.toggle('dark'); localStorage.setItem('pfm_dark', document.body.classList.contains('dark')); btnToggleDark.setAttribute('aria-pressed', document.body.classList.contains('dark')); });
+        });
+
+        // Close dropdown on click outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.profile-section')) {
+                UIService.hideProfileDropdown();
+            }
+        });
+    </script>
+</body>
+</html>

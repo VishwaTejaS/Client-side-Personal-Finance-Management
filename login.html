@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <title>Login - Personal Finance Manager</title>
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-icon">💰</div>
+                <h1>Finance Manager</h1>
+                <p>Manage your money smartly</p>
+            </div>
+
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="you@example.com"
+                        required
+                        autocomplete="email"
+                    >
+                    <span class="form-error" id="email-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-wrapper">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="••••••••"
+                            required
+                            autocomplete="current-password"
+                        >
+                        <button 
+                            type="button" 
+                            class="password-toggle" 
+                            aria-label="Toggle password visibility"
+                            onclick="togglePasswordVisibility('password')"
+                        >
+                            <i class="bx bx-hide"></i>
+                        </button>
+                    </div>
+                    <span class="form-error" id="password-error"></span>
+                </div>
+
+                <div class="form-group-checkbox">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Remember me</label>
+                </div>
+
+                <button type="submit" class="auth-button">
+                    <span class="button-text">Sign In</span>
+                    <span class="button-loader" style="display: none;">
+                        <i class="bx bx-loader-alt spinning"></i>
+                    </span>
+                </button>
+
+                <div class="auth-divider">OR</div>
+
+                <div class="demo-login">
+                    <p>Demo Account:</p>
+                    <button type="button" class="demo-button" onclick="fillDemoCredentials()">
+                        <i class="bx bx-play-circle"></i> Login as Demo
+                    </button>
+                    <p class="demo-credentials">
+                        Email: <code>demo@example.com</code><br>
+                        Password: <code>Demo@123</code>
+                    </p>
+                </div>
+            </form>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="register.html">Sign up here</a></p>
+                <p class="privacy-note">Your data is securely stored locally</p>
+            </div>
+        </div>
+
+        <div class="auth-info">
+            <h2>Welcome Back!</h2>
+            <p>Track your expenses, manage your budget, and achieve your financial goals.</p>
+            <ul class="features-list">
+                <li><i class="bx bx-check"></i> Real-time expense tracking</li>
+                <li><i class="bx bx-check"></i> Budget management</li>
+                <li><i class="bx bx-check"></i> Advanced analytics</li>
+                <li><i class="bx bx-check"></i> Secure local storage</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="services/storage.js"></script>
+    <script src="services/ui.js"></script>
+    <script src="services/auth.js"></script>
+    <script>
+        // Check if already logged in
+        if (AuthService.isAuthenticated()) {
+            window.location.href = 'index.html';
+        }
+
+        // Populate remembered email
+        window.addEventListener('load', () => {
+            const rememberedEmail = StorageService.getRememberedEmail();
+            if (rememberedEmail) {
+                document.getElementById('email').value = rememberedEmail;
+                document.getElementById('remember').checked = true;
+            }
+        });
+
+        // Form submission
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('remember').checked;
+
+            // Clear previous errors
+            document.getElementById('email-error').textContent = '';
+            document.getElementById('password-error').textContent = '';
+
+            // Validation
+            if (!email) {
+                document.getElementById('email-error').textContent = 'Email is required';
+                return;
+            }
+
+            if (!UIService.validateEmail(email)) {
+                document.getElementById('email-error').textContent = 'Enter a valid email';
+                return;
+            }
+
+            if (!password) {
+                document.getElementById('password-error').textContent = 'Password is required';
+                return;
+            }
+
+            // Show loading state
+            const btn = document.querySelector('.auth-button');
+            const btnText = btn.querySelector('.button-text');
+            const btnLoader = btn.querySelector('.button-loader');
+            btn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoader.style.display = 'inline';
+
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            const result = AuthService.login(email, password, rememberMe);
+
+            if (result.success) {
+                UIService.showNotification(result.message, 'success', 2000);
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            } else {
+                UIService.showNotification(result.message, 'error');
+                btnText.style.display = 'inline';
+                btnLoader.style.display = 'none';
+                btn.disabled = false;
+            }
+        });
+
+        // Fill demo credentials
+        function fillDemoCredentials() {
+            document.getElementById('email').value = 'demo@example.com';
+            document.getElementById('password').value = 'Demo@123';
+            document.getElementById('remember').checked = false;
+        }
+
+        // Toggle password visibility
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            const toggle = event.currentTarget;
+            const icon = toggle.querySelector('i');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'bx bx-show';
+                toggle.setAttribute('aria-pressed', 'true');
+            } else {
+                input.type = 'password';
+                icon.className = 'bx bx-hide';
+                toggle.setAttribute('aria-pressed', 'false');
+            }
+        }
+
+        // Close notification dropdown
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.password-toggle')) {
+                document.getElementById('notification-container').innerHTML = '';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <title>Register - Personal Finance Manager</title>
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-icon">💰</div>
+                <h1>Finance Manager</h1>
+                <p>Create your account</p>
+            </div>
+
+            <form id="register-form" class="auth-form">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input 
+                        type="text" 
+                        id="fullName" 
+                        name="fullName" 
+                        placeholder="John Doe"
+                        required
+                    >
+                    <span class="form-error" id="fullName-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="you@example.com"
+                        required
+                        autocomplete="email"
+                    >
+                    <span class="form-error" id="email-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-wrapper">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="••••••••"
+                            required
+                            autocomplete="new-password"
+                        >
+                        <button 
+                            type="button" 
+                            class="password-toggle" 
+                            aria-label="Toggle password visibility"
+                            onclick="togglePasswordVisibility('password')"
+                        >
+                            <i class="bx bx-hide"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength" id="password-strength"></div>
+                    <span class="form-error" id="password-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="password-wrapper">
+                        <input 
+                            type="password" 
+                            id="confirmPassword" 
+                            name="confirmPassword" 
+                            placeholder="••••••••"
+                            required
+                            autocomplete="new-password"
+                        >
+                        <button 
+                            type="button" 
+                            class="password-toggle" 
+                            aria-label="Toggle password visibility"
+                            onclick="togglePasswordVisibility('confirmPassword')"
+                        >
+                            <i class="bx bx-hide"></i>
+                        </button>
+                    </div>
+                    <span class="form-error" id="confirmPassword-error"></span>
+                </div>
+
+                <div class="form-group-checkbox">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">I agree to the Terms and Conditions</label>
+                </div>
+
+                <button type="submit" class="auth-button">
+                    <span class="button-text">Create Account</span>
+                    <span class="button-loader" style="display: none;">
+                        <i class="bx bx-loader-alt spinning"></i>
+                    </span>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="login.html">Sign in here</a></p>
+                <p class="privacy-note">Your data is securely stored locally</p>
+            </div>
+        </div>
+
+        <div class="auth-info">
+            <h2>Join Us Today!</h2>
+            <p>Start managing your finances efficiently with our powerful tools.</p>
+            <ul class="features-list">
+                <li><i class="bx bx-check"></i> Free to use</li>
+                <li><i class="bx bx-check"></i> No sign-up required email verification</li>
+                <li><i class="bx bx-check"></i> Full data privacy</li>
+                <li><i class="bx bx-check"></i> Access anywhere</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="services/storage.js"></script>
+    <script src="services/ui.js"></script>
+    <script src="services/auth.js"></script>
+    <script>
+        // Check if already logged in
+        if (AuthService.isAuthenticated()) {
+            window.location.href = 'index.html';
+        }
+
+        // Password strength indicator
+        document.getElementById('password').addEventListener('input', (e) => {
+            const password = e.target.value;
+            const strength = UIService.validatePassword(password);
+            const strengthEl = document.getElementById('password-strength');
+
+            if (!password) {
+                strengthEl.innerHTML = '';
+                return;
+            }
+
+            const bars = [strength.isValid, strength.hasUpperCase, strength.hasLowerCase, strength.hasNumber].filter(Boolean).length;
+            const strengthLevel = bars === 0 ? 'weak' : bars <= 2 ? 'medium' : 'strong';
+            const strengthColor = strengthLevel === 'weak' ? 'danger' : strengthLevel === 'medium' ? 'warning' : 'success';
+
+            strengthEl.innerHTML = `
+                <div class="strength-bar">
+                    <div class="strength-fill" style="width: ${(bars / 4) * 100}%; background-color: var(--${strengthColor});"></div>
+                </div>
+                <small>${UIService.getPasswordStrengthMessage(strength)}</small>
+            `;
+        });
+
+        // Form submission
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const terms = document.getElementById('terms').checked;
+
+            // Clear previous errors
+            document.getElementById('fullName-error').textContent = '';
+            document.getElementById('email-error').textContent = '';
+            document.getElementById('password-error').textContent = '';
+            document.getElementById('confirmPassword-error').textContent = '';
+
+            // Validation
+            if (!fullName) {
+                document.getElementById('fullName-error').textContent = 'Full name is required';
+                return;
+            }
+
+            if (fullName.length < 2) {
+                document.getElementById('fullName-error').textContent = 'Name must be at least 2 characters';
+                return;
+            }
+
+            if (!email) {
+                document.getElementById('email-error').textContent = 'Email is required';
+                return;
+            }
+
+            if (!UIService.validateEmail(email)) {
+                document.getElementById('email-error').textContent = 'Enter a valid email';
+                return;
+            }
+
+            if (!password) {
+                document.getElementById('password-error').textContent = 'Password is required';
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                document.getElementById('confirmPassword-error').textContent = 'Passwords do not match';
+                return;
+            }
+
+            if (!terms) {
+                UIService.showNotification('Please accept the terms and conditions', 'warning');
+                return;
+            }
+
+            // Show loading state
+            const btn = document.querySelector('.auth-button');
+            const btnText = btn.querySelector('.button-text');
+            const btnLoader = btn.querySelector('.button-loader');
+            btn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoader.style.display = 'inline';
+
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            const result = AuthService.register(email, password, fullName);
+
+            if (result.success) {
+                UIService.showNotification(result.message, 'success', 2000);
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+            } else {
+                UIService.showNotification(result.message, 'error');
+                btnText.style.display = 'inline';
+                btnLoader.style.display = 'none';
+                btn.disabled = false;
+            }
+        });
+
+        // Toggle password visibility
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            const toggle = event.currentTarget;
+            const icon = toggle.querySelector('i');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'bx bx-show';
+                toggle.setAttribute('aria-pressed', 'true');
+            } else {
+                input.type = 'password';
+                icon.className = 'bx bx-hide';
+                toggle.setAttribute('aria-pressed', 'false');
+            }
+        }
+    </script>
+</body>
+</html>

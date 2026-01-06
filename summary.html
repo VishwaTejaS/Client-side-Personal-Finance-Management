@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    
+    <!-- PDF Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <script src="services/storage.js" defer></script>
+    <script src="services/ui.js" defer></script>
+    <script src="services/auth.js" defer></script>
+    <script src="summary.js" defer></script>
+    <title>Summary - Personal Finance</title>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">📋 Financial Summary</div>
+            <div class="nav-links">
+                <a href="index.html">Dashboard</a>
+                <a href="analytics.html">Analytics</a>
+                <a href="charts.html">Charts</a>
+                <a href="summary.html" class="active">Summary</a>
+                <a href="profile.html">Profile</a>
+            </div>
+            <div class="toolbar">
+                <button id="btn_refresh_summary" class="button">🔄 Refresh</button>
+                <button id="btn_export_summary" class="button">📄 Export PDF</button>
+                <button id="btn_toggle_dark" class="button" aria-pressed="false" aria-label="Toggle dark mode">🌓</button>
+                <div class="profile-section">
+                    <button class="profile-button" onclick="UIService.toggleProfileDropdown()" aria-label="Profile menu">
+                        <img id="header-avatar" src="" alt="User avatar" class="avatar-sm">
+                        <span id="header-name">User</span>
+                    </button>
+                    <div id="profile-dropdown" class="profile-dropdown">
+                        <a href="profile.html" class="dropdown-item">
+                            <i class="bx bx-user"></i> My Profile
+                        </a>
+                        <a href="#" class="dropdown-item" onclick="logout(event)">
+                            <i class="bx bx-log-out"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main" style="padding: 24px;">
+            <!-- Overview Section -->
+            <div class="card">
+                <h2 style="color: var(--primary); margin-top: 0;">📊 Financial Overview</h2>
+                <div id="overview_summary" style="line-height: 1.8; color: var(--text);">
+                    <p>Loading summary...</p>
+                </div>
+            </div>
+
+            <!-- Spending Analysis -->
+            <div class="card" style="margin-top: 24px;">
+                <h2 style="color: var(--primary); margin-top: 0;">💰 Spending Analysis</h2>
+                <div id="spending_summary" style="line-height: 1.8; color: var(--text);">
+                    <p>Loading spending analysis...</p>
+                </div>
+            </div>
+
+            <!-- Category Breakdown -->
+            <div class="card" style="margin-top: 24px;">
+                <h2 style="color: var(--primary); margin-top: 0;">🏷️ Category Breakdown</h2>
+                <div id="category_summary" style="line-height: 1.8; color: var(--text);">
+                    <p>Loading category breakdown...</p>
+                </div>
+            </div>
+
+            <!-- Insights & Recommendations -->
+            <div class="card" style="margin-top: 24px;">
+                <h2 style="color: var(--primary); margin-top: 0;">💡 Insights & Recommendations</h2>
+                <div id="insights_summary" style="line-height: 1.8; color: var(--text);">
+                    <p>Loading insights...</p>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: 24px;">
+                <div class="card">
+                    <h3 style="color: var(--primary); margin-top: 0;">Total Transactions</h3>
+                    <p style="font-size: 2rem; margin: 10px 0; color: var(--primary); font-weight: 700;">
+                        <span id="stat-transactions">0</span>
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 style="color: var(--primary); margin-top: 0;">Average Expense</h3>
+                    <p style="font-size: 2rem; margin: 10px 0; color: var(--accent); font-weight: 700;">
+                        ₹<span id="stat-avg-expense">0</span>
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 style="color: var(--primary); margin-top: 0;">Spending Rate</h3>
+                    <p style="font-size: 2rem; margin: 10px 0; color: var(--warning); font-weight: 700;">
+                        <span id="stat-spending-rate">0</span>%
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+}
+</script>
+</html>

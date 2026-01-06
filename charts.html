@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    
+    <!-- Chart.js for pie and bar charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.2.1/dist/chartjs-plugin-zoom.min.js"></script>
+    <script src="services/storage.js" defer></script>
+    <script src="services/ui.js" defer></script>
+    <script src="services/auth.js" defer></script>
+    <script src="charts.js" defer></script>
+    
+    <title>Charts - Personal Finance</title>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">📊 Charts & Visualizations</div>
+            <div class="nav-links">
+                <a href="index.html">Dashboard</a>
+                <a href="analytics.html">Analytics</a>
+                <a href="charts.html" class="active">Charts</a>
+                <a href="summary.html">Summary</a>
+                <a href="profile.html">Profile</a>
+            </div>
+            <div class="toolbar">
+                <button id="btn_toggle_dark" class="button" aria-pressed="false" aria-label="Toggle dark mode">🌓</button>
+                <div class="profile-section">
+                    <button class="profile-button" onclick="UIService.toggleProfileDropdown()" aria-label="Profile menu">
+                        <img id="header-avatar" src="" alt="User avatar" class="avatar-sm">
+                        <span id="header-name">User</span>
+                    </button>
+                    <div id="profile-dropdown" class="profile-dropdown">
+                        <a href="profile.html" class="dropdown-item">
+                            <i class="bx bx-user"></i> My Profile
+                        </a>
+                        <a href="#" class="dropdown-item" onclick="logout(event)">
+                            <i class="bx bx-log-out"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main">
+            <!-- Filter Section -->
+            <div class="card" style="margin-bottom: 24px;">
+                <h3>🔍 Filter Charts</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 16px;">
+                    <div>
+                        <label for="filter-month" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text);">Month:</label>
+                        <select id="filter-month" style="width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text); font-family: inherit; font-size: 0.95rem;">
+                            <option value="">All Months</option>
+                            <option value="01">January</option>
+                            <option value="02">February</option>
+                            <option value="03">March</option>
+                            <option value="04">April</option>
+                            <option value="05">May</option>
+                            <option value="06">June</option>
+                            <option value="07">July</option>
+                            <option value="08">August</option>
+                            <option value="09">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="filter-year" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text);">Year:</label>
+                        <input type="number" id="filter-year" placeholder="YYYY" min="2020" max="2100" style="width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text); font-family: inherit; font-size: 0.95rem;">
+                    </div>
+                    <div>
+                        <label for="filter-category" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text);">Category:</label>
+                        <select id="filter-category" style="width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text); font-family: inherit; font-size: 0.95rem;">
+                            <option value="">All Categories</option>
+                            <option value="General">General</option>
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Bills">Bills</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 16px;">
+                    <button id="btn_chart_filter" class="button">🔍 Filter</button>
+                    <button id="btn_chart_reset" class="button" style="background: var(--text-muted);">↻ Reset</button>
+                </div>
+            </div>
+
+            <!-- Pie Chart by Category -->
+            <div class="card">
+                <h3>📈 Expenses by Category</h3>
+                <div class="chart-area" style="height: 300px;">
+                    <canvas id="pieChart" aria-label="Pie chart of expenses by category"></canvas>
+                </div>
+                <div style="margin-top:8px; display:flex; gap:8px;">
+                    <button id="btn_download_pie" class="button">Download PNG</button>
+                </div>
+            </div>
+
+            <!-- Bar Chart Monthly Trends -->
+            <div class="card" style="margin-top: 24px;">
+                <h3>📊 Monthly Spending Trends</h3>
+                <div class="chart-area" style="height: 300px;">
+                    <canvas id="barChart" aria-label="Bar chart of monthly spending"></canvas>
+                </div>
+                <div style="margin-top:8px; display:flex; gap:8px;">
+                    <button id="btn_download_bar" class="button">Download PNG</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+}
+</script>
+</html>
